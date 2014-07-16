@@ -1,6 +1,6 @@
 {
   "name": "run-command",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "daisy chain running shell commands",
   "main": "index.js",
   "scripts": {
