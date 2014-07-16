@@ -10,13 +10,15 @@ Run synchronous shell commands from within node
 runCommand = require("run-command")
 
 runCommand "bower", ['install'], ->
-  runCommand "gulp"
+  runCommand "gulp"``
 ```
 
 
 ### Slightly more Advanced Example
 
 ```coffee
+# start.coffee
+
 dotenv     = require('dotenv')
 runCommand = require("run-command")
 
