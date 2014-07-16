@@ -16,27 +16,29 @@ var die = function(cmd) {
 }
 
 function runCommand(command, args, callback) {
-  var cmd = spawn(path.join(basedir, command), args);
-  commandArray.push(cmd);
+  exec = function() {
+    var cmd = spawn(path.join(basedir, command), args);
+    commandArray.push(cmd);
 
-  cmd.stdout.setEncoding('utf8');
-  cmd.stdout.on('data', function(data) {
-    util.print(data);
-  });
-  cmd.stderr.setEncoding('utf8');
-  cmd.stderr.on('data', function(data) {
-    util.print(data);
-  });
+    cmd.stdout.setEncoding('utf8');
+    cmd.stdout.on('data', function(data) {
+      util.print(data);
+    });
+    cmd.stderr.setEncoding('utf8');
+    cmd.stderr.on('data', function(data) {
+      util.print(data);
+    });
 
-  // If there's a callback, call that callback when the callback
-  // needs to be called. call it.
-  var cb = callback;
-  cmd.on('close', function(code) {
-    if (code == 0 && cb && typeof(cb) === "function") { cb(); }
-    util.print('Child process exited with code: ', code, "\n");
-    if (args[0] == 'watch') { die(cmd); }
-    if (command == 'coffee') { die(cmd); }
-  });
+    // If there's a callback, call that callback when the callback
+    // needs to be called. call it.
+    var cb = callback;
+    cmd.on('close', function(code) {
+      if (code == 0 && cb && typeof(cb) === "function") { cb(); }
+      util.print('Child process exited with code: ', code, "\n");
+      if (args[0] == 'watch') { die(cmd); }
+      if (command == 'coffee') { die(cmd); }
+    });
+  }
 }
 
 module.exports = runCommand;
