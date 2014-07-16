@@ -10,7 +10,7 @@ Run synchronous shell commands from within node
 runCommand = require("run-command")
 
 runCommand "bower", ['install'], ->
-  runCommand "gulp"``
+  runCommand "gulp"
 ```
 
 
