@@ -15,7 +15,7 @@ var die = function(cmd) {
   }
 }
 
-var runCommand = function(command, args, callback) {
+module.exports = function(command, args, callback) {
   var cmd = spawn(path.join(basedir, command), args);
   commandArray.push(cmd);
 
@@ -38,5 +38,3 @@ var runCommand = function(command, args, callback) {
     if (command == 'coffee') { die(cmd); }
   });
 }
-
-module.exports = runCommand;
