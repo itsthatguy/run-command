@@ -1,13 +1,26 @@
 {
   "name": "run-command",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "daisy chain running shell commands",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": {
+    "name": "Kevin Altman",
+    "email": "kevin@itsthatguy.com",
+    "url": "@itg"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/itsthatguy/run-command"
+  },
+  "issues": {
+    "bugs": "http://github.com/itsthatguy/run-command/issues"
+  },
+  "homepage": "http://github.com/isthatguy/run-command",
+  "readmeFilename": "README.md",
   "dependencies": {
     "win-spawn": "^2.0.0"
   }
