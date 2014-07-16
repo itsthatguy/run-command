@@ -3,7 +3,7 @@ var util = require("util");
 var path = require('path');
 var spawn = require('win-spawn');
 
-var basedir = path.join(__dirname, "node_modules", ".bin");
+var basedir = path.join(process.env.PWD, "node_modules", ".bin");
 var commandArray = [];
 
 var die = function(cmd) {
@@ -15,32 +15,28 @@ var die = function(cmd) {
   }
 }
 
-function runCommand() {
-  return {
-    exec: function(command, args, callback) {
-      var cmd = spawn(path.join(basedir, command), args);
-      commandArray.push(cmd);
+function runCommand(command, args, callback) {
+  console.log("runCommand: => ", path.join(basedir, command), args);
+  var cmd = spawn(path.join(basedir, command));
+  commandArray.push(cmd);
 
-      cmd.stdout.setEncoding('utf8');
-      cmd.stdout.on('data', function(data) {
-        util.print(data);
-      });
-      cmd.stderr.setEncoding('utf8');
-      cmd.stderr.on('data', function(data) {
-        util.print(data);
-      });
+  cmd.stdout.setEncoding('utf8');
+  cmd.stdout.on('data', function(data) {
+    util.print(data);
+  });
+  cmd.stderr.setEncoding('utf8');
+  cmd.stderr.on('data', function(data) {
+    util.print(data);
+  });
 
-      // If there's a callback, call that callback when the callback
-      // needs to be called. call it.
-      var cb = callback;
-      cmd.on('close', function(code) {
-        if (code == 0 && cb && typeof(cb) === "function") { cb(); }
-        util.print('Child process exited with code: ', code, "\n");
-        if (args[0] == 'watch') { die(cmd); }
-        if (command == 'coffee') { die(cmd); }
-      });
-    }
-  }
+  // If there's a callback, call that callback when the callback
+  // needs to be called. call it.
+  var cb = callback;
+  cmd.on('close', function(code) {
+    if (code == 0 && cb && typeof(cb) === "function") { cb(); }
+    util.print('Child process exited with code: ', code, "\n");
+    if (command == 'coffee') { die(cmd); }
+  });
 }
 
 module.exports = runCommand;
