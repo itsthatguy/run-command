@@ -17,7 +17,7 @@ var die = function(cmd) {
 
 function runCommand() {
   return {
-    exec = function(command, args, callback) {
+    exec: function(command, args, callback) {
       var cmd = spawn(path.join(basedir, command), args);
       commandArray.push(cmd);
 
