@@ -1,6 +1,6 @@
 {
   "name": "run-command",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "daisy chain running shell commands",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   "homepage": "http://github.com/isthatguy/run-command",
   "readmeFilename": "README.md",
   "dependencies": {
+    "custom-logger": "^0.2.1",
     "win-spawn": "^2.0.0"
   }
 }
