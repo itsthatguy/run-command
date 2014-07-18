@@ -36,7 +36,8 @@ function runCommand(command, args, callback) {
   var cmd = spawn(path.join(basedir, command), args);
   commandArray.push(cmd);
 
-  cs.info( path.join(basedir, command) + " " + args.toString() );
+  var argsMsg = if (args) ? args.toString() : ""
+  cs.info( path.join(basedir, command) + " " + argsMsg );
 
   cmd.stdout.setEncoding('utf8');
   cmd.stdout.on('data', function(data) {
