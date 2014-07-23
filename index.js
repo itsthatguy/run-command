@@ -2,6 +2,7 @@
 var util  = require("util"),
     path  = require('path'),
     spawn = require('win-spawn'),
+    fs    = require('fs'),
     log   = require('custom-logger').config({ format: "[%timestamp%] [run-command] %event% ->%message%" });
 
 var basedir = path.join(process.env.PWD, "node_modules", ".bin");
@@ -33,7 +34,9 @@ cs = {
 
 function runCommand(command, args, callback) {
 
-  var cmd = spawn(path.join(basedir, command), args);
+  var localBinary = path.join(basedir, command),
+      cmdBinary   = fs.exists(localBinary) ? localBinary : command,
+      cmd         = spawn(cmdBinary, args);
   commandArray.push(cmd);
 
   var argsMsg = (args !== undefined) ? args.toString() : "";
