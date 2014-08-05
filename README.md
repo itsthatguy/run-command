@@ -18,11 +18,7 @@ runCommand "bower", ['install'], ->
 
 ```coffee
 # start.coffee
-
-dotenv     = require('dotenv')
 runCommand = require("run-command")
-
-dotenv.load()
 
 console.log(">> NODE_ENV: " + process.env.NODE_ENV)
 
