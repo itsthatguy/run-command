@@ -18,6 +18,7 @@ runCommand "bower", ['install'], ->
 
 ```coffee
 # start.coffee
+
 runCommand = require("run-command")
 
 console.log(">> NODE_ENV: " + process.env.NODE_ENV)
