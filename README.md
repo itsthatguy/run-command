@@ -32,3 +32,11 @@ if (process.env.NODE_ENV == "development")
   runCommand "gulp", ['watch-pre-tasks'], ->
     runCommand("gulp", ['watch'])
 ```
+
+### Configuration
+
+```coffee
+runCommand.set('info', false)    # turn off info messages
+runCommand.set('warning', false) # turn off warning messages
+runCommand.set('error', false)   # turn off error messages
+```
