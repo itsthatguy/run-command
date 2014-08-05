@@ -20,45 +20,68 @@ var die = function(cmd) {
 function strip(string) {
   return string.replace(/(\r\n|\n|\r)/gm,"");
 }
-cs = {
+
+var cs = {
+  settings: {
+    info: true,
+    warning: true,
+    error: true
+  },
   info    : function(msg) {
-    log.info(strip(msg));
+    if (this.settings.info) { log.info(strip(msg)); }
   },
   warning : function(msg) {
-    log.warning(strip(msg));
+    if (this.settings.warning) { log.warning(strip(msg)); }
   },
   error   : function(msg) {
-    log.error(strip(msg));
+    if (this.settings.error) { log.error(strip(msg)); }
   }
 }
 
-function runCommand(command, args, callback) {
+var cmd = {
+  run: function(command, args, callback) {
+    if (typeof(command) === "object") {
+      callback = command[2];
+      args = command[1];
+      command = command[0];
+    }
 
-  var localBinary = path.join(basedir, command),
-      cmdBinary   = fs.exists(localBinary) ? localBinary : command,
-      cmd         = spawn(cmdBinary, args);
-  commandArray.push(cmd);
+    var localBinary = path.join(basedir, command),
+        cmdBinary   = fs.exists(localBinary) ? localBinary : command,
+        cmd         = spawn(cmdBinary, args);
+    commandArray.push(cmd);
 
-  var argsMsg = (args !== undefined) ? args.toString() : "";
-  cs.info( path.join(basedir, command) + " " + argsMsg );
+    var argsMsg = (args !== undefined) ? args.toString() : "";
+    cs.info( cmdBinary + " " + argsMsg );
 
-  cmd.stdout.setEncoding('utf8');
-  cmd.stdout.on('data', function(data) {
-    util.print(data);
-  });
-  cmd.stderr.setEncoding('utf8');
-  cmd.stderr.on('data', function(data) {
-    util.print(data);
-  });
+    cmd.stdout.setEncoding('utf8');
+    cmd.stdout.on('data', function(data) {
+      util.print(data);
+    });
+    cmd.stderr.setEncoding('utf8');
+    cmd.stderr.on('data', function(data) {
+      util.print(data);
+    });
 
-  // If there's a callback, call that callback when the callback
-  // needs to be called. Call it.
-  var cb = callback;
-  cmd.on('close', function(code) {
-    if (code == 0 && cb && typeof(cb) === "function") { cb(); }
-    cs.info('Child process exited with code: ' + code);
-    if (command == 'coffee') { die(cmd); }
-  });
+    // If there's a callback, call that callback when the callback
+    // needs to be called. Call it.
+    var cb = callback;
+    cmd.on('close', function(code) {
+      if (code == 0 && cb && typeof(cb) === "function") { cb(); }
+      cs.info('Child process exited with code: ' + code);
+      if (command == 'coffee') { die(cmd); }
+    });
+  },
+  set: function(property, value) {
+    cs.settings[property] = value;
+  }
 }
+
+var runCommand = function(){
+  cmd.run(arguments)
+}
+
+runCommand.set = cmd.set;
+runCommand.run = cmd.run;
 
 module.exports = runCommand;
