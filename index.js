@@ -1,6 +1,4 @@
-
-var util  = require("util"),
-    path  = require('path'),
+var path  = require('path'),
     spawn = require('win-spawn'),
     fs    = require('fs'),
     log   = require('custom-logger').config({ format: "[%timestamp%] [run-command] %event% ->%message%" });
@@ -56,11 +54,11 @@ var cmd = {
 
     cmd.stdout.setEncoding('utf8');
     cmd.stdout.on('data', function(data) {
-      util.print(data);
+      console.log(data);
     });
     cmd.stderr.setEncoding('utf8');
     cmd.stderr.on('data', function(data) {
-      util.print(data);
+      console.log(data);
     });
 
     // If there's a callback, call that callback when the callback
