@@ -49,7 +49,7 @@ var cmd = {
 
     cmdStack.push(exec);
 
-    var argsMsg = (commandArgs !== undefined) ? commandArgs : "";
+    var argsMsg = (commandArgs !== undefined) ? commandArgs.join(" ") : "";
     cs.info(cmdBinary + " " + argsMsg);
 
     exec.stdout.setEncoding('utf8');
