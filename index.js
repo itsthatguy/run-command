@@ -4,14 +4,14 @@ var path  = require('path'),
     log   = require('custom-logger').config({ format: "[%timestamp%] [run-command] %event% ->%message%" });
 
 var basedir = path.join(process.env.PWD, "node_modules", ".bin");
-var commandArray = [];
+var cmdStack = [];
 
-var die = function(cmd) {
-  i = commandArray.indexOf(cmd);
-  commandArray.splice(i, 1);
+var die = function(command) {
+  i = cmdStack.indexOf(command);
+  cmdStack.splice(i, 1);
 
-  for (var i = 0; i < commandArray.length; i++) {
-    commandArray[i].kill();
+  for (var i = 0; i < cmdStack.length; i++) {
+    cmdStack[i].kill();
   }
 }
 
@@ -37,37 +37,37 @@ var cs = {
 }
 
 var cmd = {
-  run: function(command, args, callback) {
-    if (typeof(command) === "object") {
-      callback = command[2];
-      args = command[1];
-      command = command[0];
-    }
+  run: function(obj) {
+    var commandArray = obj[0].split(" "),
+        command      = commandArray.shift(),
+        commandArgs  = commandArray,
+        callback     = obj[1];
 
     var localBinary = path.join(basedir, command),
         cmdBinary   = fs.exists(localBinary) ? localBinary : command,
-        cmd         = spawn(cmdBinary, args);
-    commandArray.push(cmd);
+        exec        = spawn(cmdBinary, commandArgs);
 
-    var argsMsg = (args !== undefined) ? args.toString() : "";
-    cs.info( cmdBinary + " " + argsMsg );
+    cmdStack.push(exec);
 
-    cmd.stdout.setEncoding('utf8');
-    cmd.stdout.on('data', function(data) {
+    var argsMsg = (commandArgs !== undefined) ? commandArgs : "";
+    cs.info(cmdBinary + " " + argsMsg);
+
+    exec.stdout.setEncoding('utf8');
+    exec.stdout.on('data', function(data) {
       console.log(data);
     });
-    cmd.stderr.setEncoding('utf8');
-    cmd.stderr.on('data', function(data) {
+    exec.stderr.setEncoding('utf8');
+    exec.stderr.on('data', function(data) {
       console.log(data);
     });
 
     // If there's a callback, call that callback when the callback
     // needs to be called. Call it.
     var cb = callback;
-    cmd.on('close', function(code) {
+    exec.on('close', function(code) {
       if (code == 0 && cb && typeof(cb) === "function") { cb(); }
       cs.info('Child process exited with code: ' + code);
-      if (command == 'coffee') { die(cmd); }
+      if (command == 'coffee') { die(exec); }
     });
   },
   set: function(property, value) {
